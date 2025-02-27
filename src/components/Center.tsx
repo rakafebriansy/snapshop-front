@@ -9,7 +9,7 @@ const StyledDiv = styled.div`
     padding: 0 1.25rem;
 `;
 
-const Center: React.FC<CenterType> = ({ children }: CenterType) => {
+const Center: React.FC<CenterType> = ({ children }) => {
     return (
         <StyledDiv>
             {children}

@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Center from './Center';
 import styled from 'styled-components';
 import Button from './Button';
 import { ProductDoc } from '../models/Product';
 import ButtonLink from './ButtonLink';
 import CartIcon from './icons/CartIcon';
+import { CartContext } from '../contexts/CartContext';
 
 const Bg = styled.div`
     background-color: #222;
@@ -46,6 +47,8 @@ const ButtonsWrapper = styled.div`
 const Featured: React.FC<{ product: string }> = ({ product }) => {
     const productObj: ProductDoc = JSON.parse(product);
 
+    const { addProduct } = useContext(CartContext)!;
+
     return (
         <Bg>
             <Center>
@@ -56,8 +59,8 @@ const Featured: React.FC<{ product: string }> = ({ product }) => {
                             <Description>{productObj.description}</Description>
                             <ButtonsWrapper>
                                 <ButtonLink href={`/products/${productObj._id}`} white outlined size='l'>Read more</ButtonLink>
-                                <Button primary size='l'>
-                                    <CartIcon/>
+                                <Button primary size='l' onClick={() => addProduct(productObj._id)}>
+                                    <CartIcon />
                                     Add to cart</Button>
                             </ButtonsWrapper>
                         </div>

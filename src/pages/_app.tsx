@@ -5,6 +5,7 @@ import styled, { createGlobalStyle } from "styled-components";
 const GlobalStyles = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
   body {
+    background-color: #F0F0F0;
     padding: 0;
     margin: 0;
     font-family: 'Roboto', sans-serif;

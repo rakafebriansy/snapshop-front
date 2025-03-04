@@ -17,9 +17,14 @@ export const ButtonStyle = css`
         color: #FFF;
         border: 1px solid #FFF;
     `}
-    ${props => props.primary && css`
+    ${props => props.primary && !props.outlined && css`
         background-color: #5542F6;
         color: #FFF;
+    `}
+    ${props => props.primary && props.outlined && css`
+        background-color: transparent;
+        color: #5542F6;
+        border: 1px solid #5542F6;
     `}
     ${props => props.size === 'l' && css`
         font-size: 1.2rem;

@@ -3,6 +3,7 @@ import { ProductDoc } from '../models/Product';
 import styled from 'styled-components';
 import Button from './Button';
 import CartIcon from './icons/CartIcon';
+import Link from 'next/link';
 
 type ProductBoxType = {
     product: ProductDoc
@@ -12,7 +13,7 @@ const ProductWrapper = styled.div`
 
 `;
 
-const WhiteBox = styled.div`
+const WhiteBox = styled(Link)`
     padding: 0.625rem;
     text-align: center;
     display: flex;
@@ -21,7 +22,6 @@ const WhiteBox = styled.div`
     align-items: center;
     justify-content: space-between;
     border-radius: 1rem;
-    height: 14rem;
     img {
         height: 8rem;
         background-color: #FFF;
@@ -30,11 +30,13 @@ const WhiteBox = styled.div`
     }
 `;
 
-const Title = styled.h2`
+const Title = styled(Link)`
     font-weight: normal;
     font-size: 1rem;
     margin: 0;
     text-align: start;
+    color: black;
+    text-decoration: none;
 `;
 
 const ProductInfoBox = styled.div`
@@ -58,20 +60,21 @@ const Price = styled.div`
 `;
 
 const ProductBox: React.FC<ProductBoxType> = ({ product }) => {
+    const url = '/product/' + product._id;
     return (
         <ProductWrapper>
-            <WhiteBox>
+            <WhiteBox href={url}>
                 <img src={product.imageUrls[0]} alt="" />
-                <ProductInfoBox>
-                    <Title>{product.name}</Title>
-                    <PriceRow>
-                        <Price>${product.price}</Price>
-                        <div>
-                            <Button primary outlined> <CartIcon /></Button>
-                        </div>
-                    </PriceRow>
-                </ProductInfoBox>
             </WhiteBox>
+            <ProductInfoBox>
+                <Title href={url}>{product.name}</Title>
+                <PriceRow>
+                    <Price>${product.price}</Price>
+                    <div>
+                        <Button primary outlined> <CartIcon /></Button>
+                    </div>
+                </PriceRow>
+            </ProductInfoBox>
         </ProductWrapper>
     );
 }

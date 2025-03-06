@@ -7,6 +7,7 @@ import { CartContext } from '../../contexts/CartContext';
 import { ProductDoc } from '../../models/Product';
 import CartService from '../../services/cart';
 import Table from '../../components/Table';
+import { Types } from 'mongoose';
 
 const ColumnsWrapper = styled.div`
     display: grid;
@@ -38,10 +39,22 @@ const ProductImageBox = styled.div`
     }
 `;
 
+const QuantityLabel = styled.span`
+    padding: 0 3px;
+`;
+
 const CartPage: React.FC = () => {
 
-    const { cartProducts } = useContext(CartContext)!;
+    const { cartProducts, addProduct, removeProduct } = useContext(CartContext)!;
     const [products, setProducts] = useState<ProductDoc[]>([]);
+
+    const addProductQty = (productId: Types.ObjectId) => {
+        addProduct(productId);
+    }
+
+    const reduceProductQty = (productId: Types.ObjectId) => {
+        removeProduct(productId);
+    }
 
     useEffect(() => {
         const getProducts = async () => {
@@ -84,9 +97,9 @@ const CartPage: React.FC = () => {
                                             </ProductInfoCell>
                                             <td>
                                                 <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
-                                                    <Button>-</Button>
-                                                    <span>{qty}</span>
-                                                    <Button>+</Button>
+                                                    <Button onClick={() => reduceProductQty(product._id)}>-</Button>
+                                                    <QuantityLabel>{qty}</QuantityLabel>
+                                                    <Button onClick={() => addProductQty(product._id)}>+</Button>
                                                 </div>
                                             </td>
                                             <td>${product.price * qty}</td>

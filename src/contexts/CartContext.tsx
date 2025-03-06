@@ -6,6 +6,7 @@ export type CartContextType = {
     cartProducts: any[];
     setCartProducts: React.Dispatch<React.SetStateAction<any[]>>;
     addProduct(productId: Types.ObjectId): void;
+    removeProduct(productId: Types.ObjectId): void;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -18,6 +19,16 @@ export const CartContextProvider = ({ children }: { children: React.ReactNode })
 
     const addProduct = (productId: Types.ObjectId): void => {
         setCartProducts(prev => [...prev, productId])
+    }
+
+    const removeProduct = (productId: Types.ObjectId): void => {
+        setCartProducts(prev => {
+            const pos = prev.indexOf(productId);
+            if(pos !== -1) {
+                return prev.filter((_, i) => i !== pos);
+            }
+            return prev;
+        });
     }
 
     useEffect(() => {
@@ -33,7 +44,7 @@ export const CartContextProvider = ({ children }: { children: React.ReactNode })
     },[]);
 
     return (
-        <CartContext.Provider value={{ cartProducts, setCartProducts, addProduct }}>
+        <CartContext.Provider value={{ cartProducts, setCartProducts, addProduct, removeProduct }}>
             {children}
         </CartContext.Provider>
     );

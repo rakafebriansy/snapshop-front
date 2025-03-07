@@ -8,6 +8,7 @@ import { ProductDoc } from '../../models/Product';
 import CartService from '../../services/cart';
 import Table from '../../components/Table';
 import { Types } from 'mongoose';
+import Input from '../../components/Input';
 
 const ColumnsWrapper = styled.div`
     display: grid;
@@ -43,10 +44,21 @@ const QuantityLabel = styled.span`
     padding: 0 3px;
 `;
 
+const CityHolder = styled.div`
+    display: flex;
+    gap: 0.3rem;
+`;
+
 const CartPage: React.FC = () => {
 
     const { cartProducts, addProduct, removeProduct } = useContext(CartContext)!;
     const [products, setProducts] = useState<ProductDoc[]>([]);
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [city, setCity] = useState<string>('');
+    const [postalCode, setPostalCode] = useState<string>('');
+    const [streetAddress, setStreetAddress] = useState<string>('');
+    const [country, setCountry] = useState<string>('');
 
     const addProductQty = (productId: Types.ObjectId) => {
         addProduct(productId);
@@ -63,8 +75,16 @@ const CartPage: React.FC = () => {
         }
         if (cartProducts.length > 0) {
             getProducts();
+        } else {
+            setProducts([]);
         }
     }, [cartProducts]);
+
+    let total = 0;
+    for (const productId of cartProducts) {
+        const price = products.find(p => p._id === productId)?.price || 0;
+        total += price;
+    }
 
     return (
         <div>
@@ -107,6 +127,11 @@ const CartPage: React.FC = () => {
                                     );
                                 }
                                 )}
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total: ${total}</td>
+                                </tr>
                             </tbody>
                         </Table>
                     )}
@@ -114,9 +139,17 @@ const CartPage: React.FC = () => {
                 {!!products.length && (
                     <Box>
                         <h2>Order Information</h2>
-                        <input type="text" placeholder='Address' />
-                        <input type="text" placeholder='Address 2' />
-                        <Button block black size='l'>Continue to payment</Button>
+                        <form method="post" action="/api/checkout">
+                            <Input type="text" name="name" placeholder='Name' value={name} onChange={(e: any) => setName(e.target.value)} />
+                            <Input type="text" name="email" placeholder='Email' value={email} onChange={(e: any) => setEmail(e.target.value)} />
+                            <CityHolder>
+                                <Input type="text" name="city" placeholder='City' value={city} onChange={(e: any) => setCity(e.target.value)} />
+                                <Input type="text" name="postalCode" placeholder='Postal Code' value={postalCode} onChange={(e: any) => setPostalCode(e.target.value)} />
+                            </CityHolder>
+                            <Input type="text" name="streetAddress" placeholder='Street Address' value={streetAddress} onChange={(e: any) => setStreetAddress(e.target.value)} />
+                            <Input type="text" name="country" placeholder='Country' value={country} onChange={(e: any) => setCountry(e.target.value)} />
+                            <Button type="submit" block black size='l'>Continue to payment</Button>
+                        </form>
                     </Box>
                 )}
             </ColumnsWrapper>

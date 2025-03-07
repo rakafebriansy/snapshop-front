@@ -38,7 +38,7 @@ const Header: React.FC = ({ }) => {
                 <Wrapper>
                     <Logo href={'/'}>SnapShop</Logo>
                     <StyledNav>
-                        <NavLink href={'/home'}>Home</NavLink>
+                        <NavLink href={'/'}>Home</NavLink>
                         <NavLink href={'/categories'}>Categories</NavLink>
                         <NavLink href={'/account'}>Account</NavLink>
                         <NavLink href={'/cart'}>Cart ({cartProducts.length})</NavLink>

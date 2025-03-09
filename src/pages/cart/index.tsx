@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Header from '../../components/Header';
 import styled from 'styled-components';
-import Center from '../../components/Center';
 import Button from '../../components/Button';
 import { CartContext } from '../../contexts/CartContext';
 import { ProductDoc } from '../../models/Product';
@@ -9,6 +8,9 @@ import CartService from '../../services/cart';
 import Table from '../../components/Table';
 import { Types } from 'mongoose';
 import Input from '../../components/Input';
+import OrderService from '../../services/order';
+import Center from '../../components/Center';
+import { useRouter } from 'next/router';
 
 const ColumnsWrapper = styled.div`
     display: grid;
@@ -59,6 +61,7 @@ const CartPage: React.FC = () => {
     const [postalCode, setPostalCode] = useState<string>('');
     const [streetAddress, setStreetAddress] = useState<string>('');
     const [country, setCountry] = useState<string>('');
+    const [isClient, setIsClient] = useState(false);
 
     const addProductQty = (productId: Types.ObjectId) => {
         addProduct(productId);
@@ -66,6 +69,17 @@ const CartPage: React.FC = () => {
 
     const reduceProductQty = (productId: Types.ObjectId) => {
         removeProduct(productId);
+    }
+
+    const goToPayment = async () => {
+        try {
+            const response: { url: string } = await OrderService.store({
+                name, email, city, postalCode, streetAddress, country, products: cartProducts.toString()
+            });
+            window.location = response.url as string & Location;
+        } catch (e) {
+            alert(e);
+        }
     }
 
     useEffect(() => {
@@ -84,6 +98,28 @@ const CartPage: React.FC = () => {
     for (const productId of cartProducts) {
         const price = products.find(p => p._id === productId)?.price || 0;
         total += price;
+    }
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    if (!isClient) return null;
+
+    const router = useRouter();
+
+    if (router.asPath.includes('success')) {
+        return (<>
+            <Header></Header>
+            <Center>
+                <ColumnsWrapper>
+                    <Box>
+                        <h1>Thanks for your order!</h1>
+                        <p>We will email you when you order will be sent.</p>
+                    </Box>
+                </ColumnsWrapper>
+            </Center>
+        </>);
     }
 
     return (
@@ -139,17 +175,15 @@ const CartPage: React.FC = () => {
                 {!!products.length && (
                     <Box>
                         <h2>Order Information</h2>
-                        <form method="post" action="/api/checkout">
-                            <Input type="text" name="name" placeholder='Name' value={name} onChange={(e: any) => setName(e.target.value)} />
-                            <Input type="text" name="email" placeholder='Email' value={email} onChange={(e: any) => setEmail(e.target.value)} />
-                            <CityHolder>
-                                <Input type="text" name="city" placeholder='City' value={city} onChange={(e: any) => setCity(e.target.value)} />
-                                <Input type="text" name="postalCode" placeholder='Postal Code' value={postalCode} onChange={(e: any) => setPostalCode(e.target.value)} />
-                            </CityHolder>
-                            <Input type="text" name="streetAddress" placeholder='Street Address' value={streetAddress} onChange={(e: any) => setStreetAddress(e.target.value)} />
-                            <Input type="text" name="country" placeholder='Country' value={country} onChange={(e: any) => setCountry(e.target.value)} />
-                            <Button type="submit" block black size='l'>Continue to payment</Button>
-                        </form>
+                        <Input type="text" name="name" placeholder='Name' value={name} onChange={(e: any) => setName(e.target.value)} />
+                        <Input type="text" name="email" placeholder='Email' value={email} onChange={(e: any) => setEmail(e.target.value)} />
+                        <CityHolder>
+                            <Input type="text" name="city" placeholder='City' value={city} onChange={(e: any) => setCity(e.target.value)} />
+                            <Input type="text" name="postalCode" placeholder='Postal Code' value={postalCode} onChange={(e: any) => setPostalCode(e.target.value)} />
+                        </CityHolder>
+                        <Input type="text" name="streetAddress" placeholder='Street Address' value={streetAddress} onChange={(e: any) => setStreetAddress(e.target.value)} />
+                        <Input type="text" name="country" placeholder='Country' value={country} onChange={(e: any) => setCountry(e.target.value)} />
+                        <Button type="button" block black size='l' onClick={goToPayment}>Continue to payment</Button>
                     </Box>
                 )}
             </ColumnsWrapper>

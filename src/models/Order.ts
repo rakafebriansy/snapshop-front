@@ -2,7 +2,7 @@ import { Model, model, models, Schema, Document, Types } from "mongoose";
 
 export interface OrderDoc extends Document {
     _id: Types.ObjectId;
-    line_items: Object;
+    line_items: Object[];
     name: String;
     email: String;
     city: String;
@@ -13,7 +13,7 @@ export interface OrderDoc extends Document {
 }
 
 const OrderSchema: Schema = new Schema<OrderDoc>({
-    line_items: { type: Object, required: true },
+    line_items: [{ type: Object, required: true }],
     name: { type: String, required: true },
     email: { type: String, required: true },
     city: { type: String, required: true },

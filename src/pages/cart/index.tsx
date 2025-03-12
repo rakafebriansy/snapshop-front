@@ -53,7 +53,7 @@ const CityHolder = styled.div`
 
 const CartPage: React.FC = () => {
 
-    const { cartProducts, addProduct, removeProduct } = useContext(CartContext)!;
+    const { cartProducts, addProduct, removeProduct, setCartProducts } = useContext(CartContext)!;
     const [products, setProducts] = useState<ProductDoc[]>([]);
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
@@ -82,6 +82,10 @@ const CartPage: React.FC = () => {
         }
     }
 
+    const clearCart = () => {
+        setCartProducts([]);
+    }
+
     useEffect(() => {
         const getProducts = async () => {
             const products: ProductDoc[] = await CartService.store({ ids: cartProducts });
@@ -104,11 +108,15 @@ const CartPage: React.FC = () => {
         setIsClient(true);
     }, []);
 
+    useEffect(() => {
+        if (window.location.href.includes('success')) {
+            clearCart();
+        }
+    }, [isClient]);
+
     if (!isClient) return null;
 
-    const router = useRouter();
-
-    if (router.asPath.includes('success')) {
+    if (window.location.href.includes('success')) {
         return (<>
             <Header></Header>
             <Center>

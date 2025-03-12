@@ -40,7 +40,6 @@ export default async function handler(
             });
         }
     }
-    console.log(lineItems);
 
     const orderDoc: OrderDoc = await Order.create({
         line_items: lineItems, name, email, city, postalCode, streetAddress, country, paid: false

@@ -11,18 +11,13 @@ import Input from '../../components/Input';
 import OrderService from '../../services/order';
 import Center from '../../components/Center';
 import { useRouter } from 'next/router';
+import Box from '../../components/Box';
 
 const ColumnsWrapper = styled.div`
     display: grid;
     grid-template-columns: 1.2fr .8fr;
     padding: 1rem;
     gap: 1rem;
-`;
-
-const Box = styled.div`
-    background-color: #FFF;
-    border-radius: 0.625rem;
-    padding: 1.875rem;
 `;
 
 const ProductInfoCell = styled.td`

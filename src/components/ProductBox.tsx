@@ -61,7 +61,7 @@ const Price = styled.div`
 `;
 
 const ProductBox: React.FC<ProductBoxType> = ({ product }) => {
-    const url = '/product/' + product._id;
+    const url = '/products/' + product._id;
 
     const { addProduct } = useContext(CartContext)!;
 
